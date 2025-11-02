@@ -72,12 +72,12 @@
                     </li>
                     <li>
                         <a href="{{ route('admin.kategori-klinis.index') }}" class="block p-2 hover:bg-gray-100 rounded">
-                            Kategori Klinis
+                            Data Kategori Klinis
                         </a>
                     </li>
                     <li>
                         <a href="{{ route('admin.kode-tindakan-terapi.index') }}" class="block p-2 hover:bg-gray-100 rounded">
-                            Kode Tindakan Terapi
+                            Data Kode Tindakan Terapi
                         </a>
                     </li>
                 </ul>

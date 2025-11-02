@@ -11,12 +11,13 @@ class KategoriController extends Controller
     public function index()
     {
         $kategori = Kategori::all();
-        return view('rshp.DataMaster.kategori.index', compact('kategori'));
+        // ✅ PERBAIKI - tambahkan 'admin'
+        return view('rshp.admin.DataMaster.kategori.index', compact('kategori'));
     }
 
     public function create()
     {
-        return view('rshp.DataMaster.kategori.create');
+        return view('rshp.admin.DataMaster.kategori.create');
     }
 
     public function store(Request $request)
@@ -40,7 +41,7 @@ class KategoriController extends Controller
     public function edit($id)
     {
         $kategori = Kategori::findOrFail($id);
-        return view('rshp.DataMaster.kategori.edit', compact('kategori'));
+        return view('rshp.admin.DataMaster.kategori.edit', compact('kategori'));
     }
 
     public function update(Request $request, $id)

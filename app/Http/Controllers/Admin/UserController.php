@@ -10,10 +10,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        // ❌ SALAH - memanggil relasi 'roles' yang tidak ada
-        // $users = User::with('roles')->get();
-
-        // ✅ BENAR - gunakan relasi yang ada di Model User
+        // Pakai 'roleUser.role' untuk tampilan detail management
         $users = User::with(['roleUser.role'])->get();
         
         return view('rshp.admin.DataMaster.user.index', compact('users'));

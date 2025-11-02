@@ -8,13 +8,18 @@ class Role extends Model
 {
     protected $table = 'role';
     protected $primaryKey = 'idrole';
+    public $timestamps = false;
     
     protected $fillable = ['nama_role'];
     
-    // Many to Many dengan User
-    public function user()
+    public function users()
     {
         return $this->belongsToMany(User::class, 'role_user', 'idrole', 'iduser')
             ->withPivot('status', 'idrole_user');
+    }
+    
+    public function roleUsers()
+    {
+        return $this->hasMany(RoleUser::class, 'idrole', 'idrole');
     }
 }

@@ -8,19 +8,17 @@ class RoleUser extends Model
 {
     protected $table = 'role_user';
     protected $primaryKey = 'idrole_user';
+    public $timestamps = false; // PENTING: tabel tidak punya timestamps
     
     protected $fillable = ['iduser', 'idrole', 'status'];
     
-    // Belongs to Role
     public function role()
     {
         return $this->belongsTo(Role::class, 'idrole', 'idrole');
     }
     
-    // Belongs to User
     public function user()
     {
         return $this->belongsTo(User::class, 'iduser', 'iduser');
     }
-        
 }

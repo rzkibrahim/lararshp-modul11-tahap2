@@ -11,12 +11,12 @@ class KategoriKlinisController extends Controller
     public function index()
     {
         $kategoriKlinis = KategoriKlinis::with('kategori')->get();
-        return view('rshp.DataMaster.kategori-klinis.index', compact('kategoriKlinis'));
+        return view('rshp.admin.DataMaster.kategori-klinis.index', compact('kategoriKlinis'));
     }
 
     public function create()
     {
-        return view('rshp.DataMaster.kategori-klinis.create');
+        return view('rshp.admin.DataMaster.kategori-klinis.create');
     }
 
     public function store(Request $request)
@@ -40,7 +40,7 @@ class KategoriKlinisController extends Controller
     public function edit($id)
     {
         $kategoriKlinis = KategoriKlinis::findOrFail($id);
-        return view('rshp.DataMaster.kategori-klinis.edit', compact('kategoriKlinis'));
+        return view('rshp.admin.DataMaster.kategori-klinis.edit', compact('kategoriKlinis'));
     }
 
     public function update(Request $request, $id)

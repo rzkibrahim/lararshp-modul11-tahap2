@@ -11,7 +11,7 @@ class User extends Authenticatable
 
     protected $table = 'user';
     protected $primaryKey = 'iduser';
-    public $timestamps = true;
+    public $timestamps = false;
 
     protected $fillable = [
         'nama',
@@ -25,7 +25,6 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
 
@@ -35,16 +34,16 @@ class User extends Authenticatable
         return $this->hasOne(Pemilik::class, 'iduser', 'iduser');
     }
 
-    // Relasi One to Many dengan RoleUser
-    public function roleUser()
-    {
-        return $this->hasMany(RoleUser::class, 'iduser', 'iduser');
-    }
-
-    // Relasi Many to Many dengan Role
-    public function role()
+    // Relasi Many to Many dengan Role (untuk login & akses cepat)
+    public function roles()
     {
         return $this->belongsToMany(Role::class, 'role_user', 'iduser', 'idrole')
             ->withPivot('status', 'idrole_user');
+    }
+
+    // Relasi One to Many dengan RoleUser (untuk management detail)
+    public function roleUser()
+    {
+        return $this->hasMany(RoleUser::class, 'iduser', 'iduser');
     }
 }

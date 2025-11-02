@@ -4,27 +4,24 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Role; // ✅ Huruf besar!
+use App\Models\Role;
 
 class RoleController extends Controller
 {
-    // Menampilkan daftar semua role
     public function index()
     {
         $roles = Role::all();
-        return view('rshp.DataMaster.role.index', compact('roles'));
+        // ✅ PERBAIKI path view - tambahkan 'admin'
+        return view('rshp.admin.DataMaster.role.index', compact('roles'));
     }
 
-    // Menampilkan form untuk membuat role baru
     public function create()
     {
-        return view('rshp.DataMaster.role.create');
+        return view('rshp.admin.DataMaster.role.create');
     }
 
-    // Menyimpan role baru ke database
     public function store(Request $request)
     {
-        // Validasi input
         $request->validate([
             'nama_role' => 'required|string|max:100|unique:role,nama_role'
         ], [
@@ -33,7 +30,6 @@ class RoleController extends Controller
             'nama_role.max' => 'Nama role maksimal 100 karakter'
         ]);
 
-        // Simpan ke database
         Role::create([
             'nama_role' => $request->nama_role
         ]);
@@ -42,19 +38,16 @@ class RoleController extends Controller
             ->with('success', 'Role berhasil ditambahkan');
     }
 
-    // Menampilkan form untuk edit role
     public function edit($id)
     {
         $role = Role::findOrFail($id);
-        return view('rshp.DataMaster.role.edit', compact('role'));
+        return view('rshp.admin.DataMaster.role.edit', compact('role'));
     }
 
-    // Update role di database
     public function update(Request $request, $id)
     {
         $role = Role::findOrFail($id);
 
-        // Validasi input
         $request->validate([
             'nama_role' => 'required|string|max:100|unique:role,nama_role,' . $id . ',idrole'
         ], [
@@ -63,7 +56,6 @@ class RoleController extends Controller
             'nama_role.max' => 'Nama role maksimal 100 karakter'
         ]);
 
-        // Update data
         $role->update([
             'nama_role' => $request->nama_role
         ]);
@@ -72,7 +64,6 @@ class RoleController extends Controller
             ->with('success', 'Role berhasil diupdate');
     }
 
-    // Hapus role dari database
     public function destroy($id)
     {
         $role = Role::findOrFail($id);

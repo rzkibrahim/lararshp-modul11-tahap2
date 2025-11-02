@@ -8,16 +8,10 @@ class Kategori extends Model
 {
     protected $table = 'kategori';
     protected $primaryKey = 'idkategori';
+    public $timestamps = false; // ✅ Tambahkan ini
     
     protected $fillable = ['nama_kategori'];
     
-    // One to Many dengan Kategori Klinis
-    public function kategoriKlinis()
-    {
-        return $this->hasMany(KategoriKlinis::class, 'idkategori', 'idkategori');
-    }
-    
-    // One to Many dengan Kode Tindakan Terapi
     public function kodeTindakanTerapi()
     {
         return $this->hasMany(KodeTindakanTerapi::class, 'idkategori', 'idkategori');

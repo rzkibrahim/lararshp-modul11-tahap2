@@ -13,14 +13,14 @@ class KodeTindakanTerapiController extends Controller
     public function index()
     {
         $tindakanTerapi = KodeTindakanTerapi::with(['kategori', 'kategoriKlinis'])->get();
-        return view('rshp.DataMaster.kode-tindakan-terapi.index', compact('tindakanTerapi'));
+        return view('rshp.admin.DataMaster.kode-tindakan-terapi.index', compact('tindakanTerapi'));
     }
 
     public function create()
     {
         $kategori = Kategori::all();
         $kategoriKlinis = KategoriKlinis::all();
-        return view('rshp.DataMaster.kode-tindakan-terapi.create', compact('kategori', 'kategoriKlinis'));
+        return view('rshp.admin.DataMaster.kode-tindakan-terapi.create', compact('kategori', 'kategoriKlinis'));
     }
 
     public function store(Request $request)
@@ -49,7 +49,7 @@ class KodeTindakanTerapiController extends Controller
         $tindakanTerapi = KodeTindakanTerapi::findOrFail($id);
         $kategori = Kategori::all();
         $kategoriKlinis = KategoriKlinis::all();
-        return view('rshp.DataMaster.kode-tindakan-terapi.edit', compact('tindakanTerapi', 'kategori', 'kategoriKlinis'));
+        return view('rshp.admin.DataMaster.kode-tindakan-terapi.edit', compact('tindakanTerapi', 'kategori', 'kategoriKlinis'));
     }
 
     public function update(Request $request, $id)
