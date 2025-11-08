@@ -1,144 +1,221 @@
-{{-- resources/views/rshp/admin/DataMaster/user/index.blade.php --}}
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data User - RSHP</title>
+    <title>User - RSHP</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-gray-100">
-    <div class="min-h-screen">
-        {{-- Header --}}
-        <nav class="bg-blue-600 text-white p-4 shadow-lg">
-            <div class="container mx-auto flex justify-between items-center">
-                <h1 class="text-2xl font-bold">Data User</h1>
-                <a href="{{ route('admin.dashboard') }}" class="bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded transition">
-                    ← Kembali ke Dashboard
-                </a>
-            </div>
-        </nav>
-
-        <div class="container mx-auto p-8">
-            {{-- Success Message --}}
-            @if(session('success'))
-                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded" role="alert">
-                    <p class="font-medium">{{ session('success') }}</p>
-                </div>
-            @endif
-
-            {{-- Card Container --}}
-            <div class="bg-white rounded-lg shadow-xl overflow-hidden">
-                <div class="p-6 bg-gradient-to-r from-blue-500 to-blue-600">
-                    <h2 class="text-2xl font-bold text-white">Daftar User</h2>
-                    <p class="text-blue-100 mt-1">Total: {{ $users->count() }} user</p>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="bg-gray-50 border-b-2 border-gray-200">
-                                <th class="p-4 text-left text-sm font-semibold text-gray-700">ID</th>
-                                <th class="p-4 text-left text-sm font-semibold text-gray-700">Nama</th>
-                                <th class="p-4 text-left text-sm font-semibold text-gray-700">Email</th>
-                                <th class="p-4 text-left text-sm font-semibold text-gray-700">Role</th>
-                                <th class="p-4 text-center text-sm font-semibold text-gray-700">Status</th>
-                                <th class="p-4 text-center text-sm font-semibold text-gray-700">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            @forelse($users as $user)
-                                @php
-                                    // Cek apakah user punya minimal 1 role aktif
-                                    $hasActiveRole = $user->roleUser->where('status', 1)->isNotEmpty();
-                                @endphp
-                                <tr class="hover:bg-blue-50 transition duration-150">
-                                    <td class="p-4 text-sm text-gray-700">{{ $user->iduser }}</td>
-                                    <td class="p-4">
-                                        <div class="font-medium text-gray-900">{{ $user->nama }}</div>
-                                    </td>
-                                    <td class="p-4 text-sm text-gray-600">{{ $user->email }}</td>
-                                    <td class="p-4">
-                                        @if($user->roleUser && $user->roleUser->count() > 0)
-                                            <div class="flex flex-wrap gap-2">
-                                                @foreach($user->roleUser as $ru)
-                                                    @if($ru->status == 1)
-                                                        {{-- Role Aktif - Biru --}}
-                                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
-                                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            {{ $ru->role->nama_role ?? 'Unknown' }}
-                                                        </span>
-                                                    @else
-                                                        {{-- Role Tidak Aktif - Abu-abu dengan strikethrough --}}
-                                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500 border border-gray-300 line-through">
-                                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                                                            </svg>
-                                                            {{ $ru->role->nama_role ?? 'Unknown' }}
-                                                        </span>
-                                                    @endif
-                                                @endforeach
-                                            </div>
-                                        @else
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500">
-                                                Tidak ada role
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td class="p-4 text-center">
-                                        @if($hasActiveRole)
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Aktif
-                                            </span>
-                                        @else
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
-                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                                                </svg>
-                                                Tidak Aktif
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td class="p-4 text-center">
-                                        <div class="flex justify-center gap-2">
-                                            <a href="#" class="inline-flex items-center px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white text-sm rounded transition">
-                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                                </svg>
-                                                Edit
-                                            </a>
-                                            <button class="inline-flex items-center px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm rounded transition">
-                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                </svg>
-                                                Hapus
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="p-8 text-center">
-                                        <div class="flex flex-col items-center justify-center text-gray-400">
-                                            <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
-                                            </svg>
-                                            <p class="text-lg font-medium">Tidak ada data user</p>
-                                            <p class="text-sm mt-1">Data user akan muncul di sini</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <h1 class="text-2xl font-bold text-gray-900">User</h1>
+                <nav class="flex space-x-4 items-center">
+                    <a href="{{ route('admin.dashboard') }}" class="text-blue-600 hover:text-blue-800">
+                        <i class="fas fa-home mr-1"></i> Dashboard
+                    </a>
+                    <span class="text-gray-400">/</span>
+                    
+                    <!-- Dropdown Data Master -->
+                    <div class="relative group">
+                        <button class="text-blue-600 hover:text-blue-800 flex items-center">
+                            <i class="fas fa-database mr-1"></i> Data Master
+                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                        
+                        <!-- Dropdown Menu -->
+                        <div class="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-10 border border-gray-200">
+                            <div class="py-2">
+                                <a href="{{ route('admin.jenis-hewan.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                    <i class="fas fa-paw mr-2"></i>Jenis Hewan
+                                </a>
+                                <a href="{{ route('admin.kategori.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                    <i class="fas fa-tags mr-2"></i>Kategori
+                                </a>
+                                <a href="{{ route('admin.kategori-klinis.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                    <i class="fas fa-stethoscope mr-2"></i>Kategori Klinis
+                                </a>
+                                <a href="{{ route('admin.kode-tindakan-terapi.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                    <i class="fas fa-procedures mr-2"></i>Kode Tindakan & Terapi
+                                </a>
+                                <a href="{{ route('admin.pemilik.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                    <i class="fas fa-users mr-2"></i>Pemilik
+                                </a>
+                                <a href="{{ route('admin.pet.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                    <i class="fas fa-dog mr-2"></i>Pet
+                                </a>
+                                <a href="{{ route('admin.ras-hewan.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                    <i class="fas fa-dna mr-2"></i>Ras Hewan
+                                </a>
+                                <a href="{{ route('admin.role.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                    <i class="fas fa-user-tag mr-2"></i>Role
+                                </a>
+                                <a href="{{ route('admin.user.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 bg-blue-50 text-blue-600">
+                                    <i class="fas fa-user mr-2"></i>User
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <span class="text-gray-400">/</span>
+                    <span class="text-gray-600">User</span>
+                </nav>
             </div>
         </div>
-    </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Success/Error Messages -->
+        @if(session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+                <i class="fas fa-check-circle mr-2"></i>{{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                <i class="fas fa-exclamation-circle mr-2"></i>{{ session('error') }}
+            </div>
+        @endif
+
+        <!-- Card Container -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <!-- Card Header -->
+            <div class="bg-gradient-to-r from-blue-700 to-blue-600 px-6 py-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-semibold text-white">Data User</h2>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-blue-100">Total: {{ $users->count() }} user</span>
+                        <a href="{{ route('admin.user.create') }}" 
+                           class="bg-white text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-50 transition duration-200">
+                            <i class="fas fa-plus mr-2"></i>Tambah Data
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="p-4 text-left font-semibold text-gray-700">No</th>
+                            <th class="p-4 text-left font-semibold text-gray-700">ID User</th>
+                            <th class="p-4 text-left font-semibold text-gray-700">Nama</th>
+                            <th class="p-4 text-left font-semibold text-gray-700">Email</th>
+                            <th class="p-4 text-left font-semibold text-gray-700">Role</th>
+                            <th class="p-4 text-left font-semibold text-gray-700">Status</th>
+                            <th class="p-4 text-left font-semibold text-gray-700">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($users as $index => $user)
+                        @php
+                            $hasActiveRole = $user->roleUser->where('status', 1)->isNotEmpty();
+                        @endphp
+                        <tr class="border-b border-gray-200 hover:bg-blue-50 transition duration-150">
+                            <td class="p-4 text-gray-600">{{ $index + 1 }}</td>
+                            <td class="p-4 text-gray-800 font-medium">{{ $user->iduser }}</td>
+                            <td class="p-4 text-gray-800">{{ $user->nama }}</td>
+                            <td class="p-4 text-gray-800">{{ $user->email }}</td>
+                            <td class="p-4">
+                                @if($user->roleUser && $user->roleUser->count() > 0)
+                                    <div class="flex flex-wrap gap-2">
+                                        @foreach($user->roleUser as $ru)
+                                            @if($ru->status == 1)
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
+                                                    <i class="fas fa-check mr-1 text-xs"></i>
+                                                    {{ $ru->role->nama_role ?? 'Unknown' }}
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500 border border-gray-300 line-through">
+                                                    <i class="fas fa-times mr-1 text-xs"></i>
+                                                    {{ $ru->role->nama_role ?? 'Unknown' }}
+                                                </span>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500">
+                                        Tidak ada role
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="p-4">
+                                @if($hasActiveRole)
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                                        <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                        Aktif
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                                        <i class="fas fa-times-circle mr-1 text-xs"></i>
+                                        Tidak Aktif
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="p-4">
+                                <div class="flex gap-2">
+                                    <a href="#" 
+                                       class="px-3 py-1 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-200">
+                                        <i class="fas fa-edit mr-1"></i>Edit
+                                    </a>
+                                    <form action="#" 
+                                          method="POST" 
+                                          onsubmit="return confirm('Apakah Anda yakin ingin menghapus user ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                                class="px-3 py-1 text-sm text-white bg-red-600 rounded-lg hover:bg-red-700 transition duration-200">
+                                            <i class="fas fa-trash mr-1"></i>Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="7" class="p-8 text-center text-gray-500">
+                                <i class="fas fa-users text-4xl mb-4 text-gray-300"></i>
+                                <p class="text-lg">Tidak ada data user</p>
+                                <a href="{{ route('admin.user.create') }}" 
+                                   class="inline-block mt-2 text-blue-600 hover:text-blue-800">
+                                    Tambah data pertama
+                                </a>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <p class="text-center text-gray-500 text-sm">
+                &copy; {{ date('Y') }} Rumah Sakit Hewan Pendidikan. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Script untuk alert - DIHAPUS atau DIKOMENTARI -->
+    <!--
+    <script>
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.bg-green-100, .bg-red-100');
+            alerts.forEach(alert => {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+    </script>
+    -->
 </body>
 </html>

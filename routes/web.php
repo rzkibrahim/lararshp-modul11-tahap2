@@ -13,10 +13,20 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PemilikController;
 use App\Http\Controllers\Admin\PetController;
-use App\Http\Controllers\Resepsionis\DashboardResepsionisController;
+
 use App\Http\Controllers\Dokter\DashboardDokterController;
+use App\Http\Controllers\Dokter\RekamMedisDocController;
+
 use App\Http\Controllers\Perawat\DashboardPerawatController;
+use App\Http\Controllers\Perawat\RekamMedisController;
+
 use App\Http\Controllers\Pemilik\DashboardPemilikController;
+
+use App\Http\Controllers\Resepsionis\DashboardResepsionisController;
+use App\Http\Controllers\Resepsionis\RegistrasiPemilikController;
+use App\Http\Controllers\Resepsionis\RegistrasiPetController;
+use App\Http\Controllers\Resepsionis\TemuDokterController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -37,14 +47,14 @@ Route::get('/visi-misi', [rshpController::class, 'visiMisi'])->name('visi-misi')
 Auth::routes();
 
 // Temporary routes untuk debugging
-Route::get('/force-logout', function() {
+Route::get('/force-logout', function () {
     Auth::logout();
     request()->session()->invalidate();
     request()->session()->regenerateToken();
     return redirect('/')->with('success', 'Logout berhasil');
 });
 
-Route::get('/check-auth', function() {
+Route::get('/check-auth', function () {
     if (Auth::check()) {
         return 'User sedang login: ' . Auth::user()->email;
     }
@@ -58,13 +68,13 @@ Route::get('/check-auth', function() {
 */
 
 Route::middleware(['isAdministrator'])->prefix('admin')->group(function () {
-    
+
     // Dashboard
     Route::get('/dashboard', [DashboardAdminController::class, 'index'])->name('admin.dashboard');
 
     // Data Master Routes
     Route::prefix('datamaster')->group(function () {
-        
+
         // User
         Route::resource('user', UserController::class)->names([
             'index' => 'admin.user.index',
@@ -74,6 +84,11 @@ Route::middleware(['isAdministrator'])->prefix('admin')->group(function () {
             'update' => 'admin.user.update',
             'destroy' => 'admin.user.destroy',
         ]);
+
+        // ✅ TAMBAHKAN ROUTE INI - Reset Password
+        Route::post('user/{id}/reset-password', [UserController::class, 'resetPassword'])
+            ->name('admin.user.reset-password');
+
 
         // Pemilik
         Route::resource('pemilik', PemilikController::class)->names([
@@ -163,18 +178,43 @@ Route::middleware(['isAdministrator'])->prefix('admin')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['isResepsionis'])->prefix('resepsionis')->group(function () {
-    Route::get('/dashboard', [DashboardResepsionisController::class, 'index'])->name('resepsionis.dashboard');
-});
+Route::middleware(['web', 'isResepsionis'])->group(function () {
+    // Dashboard
+    Route::get('/resepsionis/dashboard', [DashboardResepsionisController::class, 'index'])->name('resepsionis.dashboard');
 
+    // Registrasi Pemilik
+    Route::get('/resepsionis/registrasi/pemilik', [RegistrasiPemilikController::class, 'create'])->name('resepsionis.registrasi.pemilik');
+    Route::post('/resepsionis/registrasi/pemilik', [RegistrasiPemilikController::class, 'store'])->name('resepsionis.registrasi.pemilik.store');
+
+    // Registrasi Pet
+    Route::get('/resepsionis/registrasi/pet', [RegistrasiPetController::class, 'create'])->name('resepsionis.registrasi.pet');
+    Route::post('/resepsionis/registrasi/pet', [RegistrasiPetController::class, 'store'])->name('resepsionis.registrasi.pet.store');
+
+    // Temu Dokter (ini sudah berfungsi sebagai manajemen antrian)
+    Route::get('/resepsionis/temu-dokter', [TemuDokterController::class, 'index'])->name('resepsionis.temu-dokter');
+    Route::post('/resepsionis/temu-dokter', [TemuDokterController::class, 'store'])->name('resepsionis.temu-dokter.store');
+    Route::post('/resepsionis/temu-dokter/update-status', [TemuDokterController::class, 'updateStatus'])->name('resepsionis.temu-dokter.update-status');
+});
 /*
 |--------------------------------------------------------------------------
 | Dokter Routes
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['isDokter'])->prefix('dokter')->group(function () {
-    Route::get('/dashboard', [DashboardDokterController::class, 'index'])->name('dokter.dashboard');
+Route::middleware(['isDokter'])->prefix('dokter')->name('dokter.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [DashboardDokterController::class, 'index'])->name('dashboard');
+
+    // Rekam Medis
+    Route::get('/rekam-medis', [RekamMedisDocController::class, 'list'])->name('rekam-medis.list');
+    Route::get('/rekam-medis/{id}', [RekamMedisDocController::class, 'detail'])->name('rekam-medis.detail');
+    Route::get('/rekam-medis/create/{id}', [RekamMedisDocController::class, 'create'])->name('rekam-medis.create');
+
+    // Jadwal Praktek - TAMBAHKAN INI
+    Route::get('/jadwal-praktek', [DashboardDokterController::class, 'jadwalPraktek'])->name('jadwal-praktek');
+
+    // Pasien Hari Ini - TAMBAHKAN INI
+    Route::get('/pasien-hari-ini', [DashboardDokterController::class, 'pasienHariIni'])->name('pasien-hari-ini');
 });
 
 /*
@@ -183,8 +223,19 @@ Route::middleware(['isDokter'])->prefix('dokter')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['isPerawat'])->prefix('perawat')->group(function () {
-    Route::get('/dashboard', [DashboardPerawatController::class, 'index'])->name('perawat.dashboard');
+Route::middleware(['isPerawat'])->prefix('perawat')->name('perawat.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [DashboardPerawatController::class, 'index'])->name('dashboard');
+
+    // Rekam Medis
+    Route::get('/rekam-medis', [DashboardPerawatController::class, 'rekamMedis'])->name('rekam-medis');
+
+    // Pasien Hari Ini
+    Route::get('/pasien-hari-ini', [DashboardPerawatController::class, 'pasienHariIni'])->name('pasien-hari-ini');
+
+    // Tindakan
+    Route::get('/tindakan', [DashboardPerawatController::class, 'tindakan'])->name('tindakan');
+    Route::get('/tindakan/create/{id}', [DashboardPerawatController::class, 'tindakanCreate'])->name('tindakan.create');
 });
 
 /*
@@ -193,6 +244,20 @@ Route::middleware(['isPerawat'])->prefix('perawat')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['isPemilik'])->prefix('pemilik')->group(function () {
-    Route::get('/dashboard', [DashboardPemilikController::class, 'index'])->name('pemilik.dashboard'); // ✅ Perbaiki typo 'oemilik' -> 'pemilik'
-});
+Route::middleware(['web', 'isPemilik'])->prefix('pemilik')->name('pemilik.')->group(function () {
+        // Dashboard & Home
+        Route::get('/dashboard', [DashboardPemilikController::class, 'index'])->name('dashboard');
+        Route::get('/home', [DashboardPemilikController::class, 'index'])->name('home'); // ✅ TAMBAHKAN INI
+        
+        // Pet
+        Route::get('/pet', [DashboardPemilikController::class, 'petList'])->name('pet.list');
+        
+        // Rekam Medis
+        Route::get('/rekammedis', [DashboardPemilikController::class, 'rekamMedis'])->name('rekammedis.list');
+        
+        // Reservasi
+        Route::get('/reservasi', [DashboardPemilikController::class, 'reservasi'])->name('reservasi.list');
+        
+        // Riwayat
+        Route::get('/riwayat', [DashboardPemilikController::class, 'riwayat'])->name('riwayat.list');
+    });

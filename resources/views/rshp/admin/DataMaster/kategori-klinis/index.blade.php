@@ -7,16 +7,59 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-100">
     <!-- Header -->
     <header class="bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
                 <h1 class="text-2xl font-bold text-gray-900">Kategori Klinis</h1>
-                <nav class="flex space-x-4">
+                <nav class="flex space-x-4 items-center">
                     <a href="{{ route('admin.dashboard') }}" class="text-blue-600 hover:text-blue-800">
                         <i class="fas fa-home mr-1"></i> Dashboard
                     </a>
+                    <span class="text-gray-400">/</span>
+                    
+                    <!-- Dropdown Data Master -->
+                    <div class="relative group">
+                        <button class="text-blue-600 hover:text-blue-800 flex items-center">
+                            <i class="fas fa-database mr-1"></i> Data Master
+                            <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                        
+                        <!-- Dropdown Menu -->
+                        <div class="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-10 border border-gray-200">
+                            <div class="py-2">
+                                <a href="{{ route('admin.jenis-hewan.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                    <i class="fas fa-paw mr-2"></i>Jenis Hewan
+                                </a>
+                                <a href="{{ route('admin.kategori.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                    <i class="fas fa-tags mr-2"></i>Kategori
+                                </a>
+                                <a href="{{ route('admin.kategori-klinis.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 bg-blue-50 text-blue-600">
+                                    <i class="fas fa-stethoscope mr-2"></i>Kategori Klinis
+                                </a>
+                                <a href="{{ route('admin.kode-tindakan-terapi.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                    <i class="fas fa-procedures mr-2"></i>Kode Tindakan & Terapi
+                                </a>
+                                <a href="{{ route('admin.pemilik.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                    <i class="fas fa-users mr-2"></i>Pemilik
+                                </a>
+                                <a href="{{ route('admin.pet.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                    <i class="fas fa-dog mr-2"></i>Pet
+                                </a>
+                                <a href="{{ route('admin.ras-hewan.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                    <i class="fas fa-dna mr-2"></i>Ras Hewan
+                                </a>
+                                <a href="{{ route('admin.role.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                    <i class="fas fa-user-tag mr-2"></i>Role
+                                </a>
+                                <a href="{{ route('admin.user.index') }}" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                    <i class="fas fa-user mr-2"></i>User
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <span class="text-gray-400">/</span>
                     <span class="text-gray-600">Kategori Klinis</span>
                 </nav>
@@ -47,7 +90,7 @@
                     <h2 class="text-xl font-semibold text-white">Data Kategori Klinis</h2>
                     <a href="{{ route('admin.kategori-klinis.create') }}" 
                        class="bg-white text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-50 transition duration-200">
-                        <i class="fas fa-plus mr-2"></i>Tambah Data
+                        <i class="fas fa-plus mr-2"></i>Tambah Kategori Klinis
                     </a>
                 </div>
             </div>
@@ -110,7 +153,7 @@
     <footer class="bg-white border-t border-gray-200 mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <p class="text-center text-gray-500 text-sm">
-                &copy; {{ date('Y') }} Rumah Sakit Harapan Paksi. All rights reserved.
+                &copy; {{ date('Y') }} Rumah Sakit Hewan Pendidikan. All rights reserved.
             </p>
         </div>
     </footer>
